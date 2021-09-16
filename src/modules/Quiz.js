@@ -1,5 +1,5 @@
 import '.././App.css';
-import { Paper, Grid, Link, Typography, AppBar, Toolbar, FormControlLabel, Button, Radio, RadioGroup, TextField } from "@material-ui/core";
+import { Paper, Grid, Link, Typography, AppBar, Toolbar, FormControlLabel, Button, Radio, RadioGroup, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
@@ -16,17 +16,21 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
 
     const classes = useStyles();
     const [alert, setAlert] = useState(initialAlert);
+    const [numSolved, setNumSolved] = useState(0);
+    const [numRight, setNumRight] = useState(0);
 
 
     const handleAnswer = (e) => {
-
         const newItems = [...questions];
-        newItems[e.target.name].answer_id=e.target.value
-
+        newItems[e.target.name].answer_id = e.target.value
         setQuestions(newItems);
-        console.log(questions)
-
-        
+        const NumSolved = numSolved
+        setNumSolved(NumSolved + 1)
+        if (newItems[e.target.name].answers[e.target.value].is_true) {
+            const NumRight = numRight
+            setNumRight(NumRight + 1)
+        }
+        quiz.score = "" + numRight + "/" + questions.length
     };
     const [open, setOpen] = useState(false);
 
@@ -72,8 +76,11 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
                     aria-labelledby="form-dialog-title">
                     <AppBar className={classes.appBar}>
                         <Toolbar>
+                            <IconButton edge="start" color="black" onClick={(e) => setOpen(false)} aria-label="close">
+                                <CloseIcon />
+                            </IconButton>
                             <Typography variant="h6" className={classes.title}>
-                                {quiz.title}
+                                Title : {quiz.title}, Score : {numRight}/{questions.length}
                             </Typography>
 
                         </Toolbar>
@@ -92,17 +99,6 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
 
                                                                 <Typography variant="h5">{`${i + 1})`} {questionElement.text}</Typography>
                                                             </Grid>
-                                                            {/*<Grid item xs={10}>
-                                                        <TextField variant="outlined" fullWidth
-                                                            label={`Question Positive Feedback ${i}`} value={questionElement.feedback_true}
-                                                            required />
-                                                    </Grid>
-                                                    <Grid item xs={10}>
-                                                        <TextField variant="outlined" fullWidth
-                                                            label={`Question Negative Feedback ${i}`} value={questionElement.feedback_false}
-                                                            required />
-                                                    </Grid> */}
-
                                                         </Grid >
                                                     </Grid >
 
@@ -111,14 +107,31 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
                                                     aria-label="gender"
                                                     name="controlled-radio-buttons-group"
                                                     disabled={true}
-                                                    value={questionElement.answer_id?Number(questionElement.answer_id):null}
+                                                    value={questionElement.answer_id ? Number(questionElement.answer_id) : null}
                                                     onChange={handleAnswer}
                                                 >
                                                     {[...Array(questionElement.answers.length)].map((_, j) =>
-                                                        <FormControlLabel disabled={questionElement.answer_id} value={j} name={i} control={<Radio />} label={questionElement.answers[i].text} />
-
+                                                        <FormControlLabel disabled={questionElement.answer_id} value={j} name={i} control={<Radio />} label={questionElement.answers[j].text} />
                                                     )}
                                                 </RadioGroup>
+
+                                                <Grid container justifyContent="center" spacing={2}>
+                                                    <Grid item xs={10}>
+                                                        <Grid container justifyContent="center" spacing={2}>
+                                                            <Grid item xs={10}>
+                                                                {questionElement.answer_id && questionElement.answers[questionElement.answer_id].is_true ? <Typography style={{ color: "Green" }} variant="h5">{questionElement.feedback_true}</Typography> :
+                                                                    null
+                                                                }
+                                                                {questionElement.answer_id && !questionElement.answers[questionElement.answer_id].is_true ? <Typography style={{ color: "Red" }} variant="h5">{questionElement.feedback_false}</Typography> :
+                                                                    null
+                                                                }
+
+                                                            </Grid>
+
+                                                        </Grid >
+                                                    </Grid >
+
+                                                </Grid >
 
                                             </Paper>
                                         </Grid>)
