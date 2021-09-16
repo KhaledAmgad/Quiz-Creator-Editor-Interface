@@ -9,13 +9,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const initialAlert = { on: false, type: "", message: "", errors: [] }
-export default function QuizCreatorEditor() {
+export default function QuizCreatorEditor({quizElement,setQuizElement}) {
 
+
+  const [quiz, setQuiz] = useState(quizElement);
 
   const classes = useStyles();
   const [alert, setAlert] = useState(initialAlert);
 
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState(quiz.questions_answers);
   const [answer, setAnswer] = useState({
     is_true: false,
     text: ""
@@ -24,9 +26,7 @@ export default function QuizCreatorEditor() {
     answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: [
     ]
   });
-  const [quiz, setQuiz] = useState({
-    created: "", description: "", modified: "", questions_answers: [], score: null, title: "", url: ""
-  });
+  
 
   const handleChangeNewQuestion = e => {
     setQuestion({ ...question, [e.target.name]: e.target.value });
@@ -125,7 +125,7 @@ export default function QuizCreatorEditor() {
       return;
     }
     setQuiz({...quiz,questions_answers:questions},console.log(quiz))
-
+    setQuizElement({...quiz,questions_answers:questions})
     setAlert({ on: true, type: "success", message: "Saved successfully", });
     
   };
@@ -267,7 +267,7 @@ export default function QuizCreatorEditor() {
 
                 <TextField variant="outlined" fullWidth
 
-                  name="text" label={`Answer ${i}`} value={question.answers[i].text} onChange={handleChangeNewAnswer}
+                  name="text" label={`Answer ${i}`} value={question.answers[i].text}
                   required />
               </Grid>
               <Grid item xs={3}>
@@ -275,7 +275,7 @@ export default function QuizCreatorEditor() {
                   control={
                     <Checkbox
                       checked={question.answers[i].is_true}
-                      onChange={handleChangeNewAnswer}
+                      
                       name="is_true"
 
                       color="primary"

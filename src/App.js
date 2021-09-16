@@ -1,12 +1,20 @@
 import './App.css';
 import QuizCreatorEditor from './modules/QuizCreatorEditor'
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Grid, TextareaAutosize, Collapse, IconButton, FormControlLabel, Button, Checkbox, TextField } from "@material-ui/core";
 
 function App() {
   const classes = useStyles();
   const [mode, setMode] = useState("view");
+  const [quiz, setQuiz] = useState({
+    created: "", description: "", modified: "", questions_answers: [], score: null, title: "", url: ""
+  });
+  useEffect(() => {
+   console.log(quiz)
+
+  }, [quiz]);
+
   return (
     <div className="App">
 
@@ -34,7 +42,7 @@ function App() {
 
       <Grid container justifyContent="center" spacing={2}>
         {mode != "view" ? <Grid item xs={10}>
-          <QuizCreatorEditor />
+          <QuizCreatorEditor quizElement={quiz} setQuizElement={setQuiz} />
         </Grid> : null}
 
 
