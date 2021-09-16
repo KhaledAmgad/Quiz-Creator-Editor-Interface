@@ -1,7 +1,7 @@
 import { Paper, Grid, TextareaAutosize, Collapse, IconButton, FormControlLabel, Button, Checkbox, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
-import {  useState } from "react";
+import { useState } from "react";
 import Alert from "@material-ui/lab/Alert";
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -9,7 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const initialAlert = { on: false, type: "", message: "", errors: [] }
-export default function QuizCreatorEditor({quizElement,setQuizElement}) {
+export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
 
 
   const [quiz, setQuiz] = useState(quizElement);
@@ -26,7 +26,7 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
     answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: [
     ]
   });
-  
+
 
   const handleChangeNewQuestion = e => {
     setQuestion({ ...question, [e.target.name]: e.target.value });
@@ -49,7 +49,7 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
 
   const handleAddQuestion = () => {
     if (
-      !question.text||!question.feedback_false||!question.feedback_true||question.answers.length<2||question.answers.filter((v) => v.is_true).length===0
+      !question.text || !question.feedback_false || !question.feedback_true || question.answers.length < 2 || question.answers.filter((v) => v.is_true).length === 0
     ) {
       setAlert({ on: true, type: "error", message: "Please fill all question fields" })
       return;
@@ -113,21 +113,34 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
 
   const handleSave = () => {
     if (
-      questions.length===0
+      questions.length === 0
     ) {
       setAlert({ on: true, type: "error", message: "Please Add Questions" })
       return;
     }
     if (
-      !quiz.title||!quiz.description||!quiz.url
+      !quiz.title || !quiz.description || !quiz.url
     ) {
       setAlert({ on: true, type: "error", message: "Please fill all quiz fields" })
       return;
     }
-    setQuiz({...quiz,questions_answers:questions},console.log(quiz))
-    setQuizElement({...quiz,questions_answers:questions})
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+ 
+    setQuiz({
+      ...quiz, questions_answers: questions, created: date + '/' + month + '/' + year
+        + ' ' + hours + ':' + min + ':' + sec
+    }, console.log(quiz))
+    setQuizElement({
+      ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
+        + ' ' + hours + ':' + min + ':' + sec
+    })
     setAlert({ on: true, type: "success", message: "Saved successfully", });
-    
+
   };
 
 
@@ -206,7 +219,7 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
 
                     <TextField variant="outlined" fullWidth
 
-                      name="text" label={`Answer ${i}`} value={questionElement.answers[i].text} 
+                      name="text" label={`Answer ${i}`} value={questionElement.answers[i].text}
                       required />
                   </Grid>
                   <Grid item xs={3}>
@@ -214,7 +227,7 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
                       control={
                         <Checkbox
                           checked={questionElement.answers[i].is_true}
-                          
+
                           name="is_true"
 
                           color="primary"
@@ -275,7 +288,7 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
                   control={
                     <Checkbox
                       checked={question.answers[i].is_true}
-                      
+
                       name="is_true"
 
                       color="primary"
@@ -357,7 +370,7 @@ export default function QuizCreatorEditor({quizElement,setQuizElement}) {
         <Grid item xs={3}>
           <Button variant="outlined" color="primary" fullWidth
 
-          onClick={handleSave}
+            onClick={handleSave}
           >Save</Button>
         </Grid>
 
@@ -408,6 +421,6 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(1),
     },
   },
- 
+
 
 }));
