@@ -408,23 +408,6 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(1),
     },
   },
-  paperLocation: {
-    overflow: "scroll",
-    padding: theme.spacing(2),
-    margin: theme.spacing(1),
-    textAlign: "center",
-    height: "250px",
-    color: theme.palette.text.secondary,
-    "& > * + *": {
-      marginTop: theme.spacing(1),
-    },
-  },
-  table: {
-    tableLayout: "fixed",
-    justifyContent: "center",
+ 
 
-
-    align: "center",
-    textAlign: "center"
-  },
 }));
