@@ -9,7 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const initialAlert = { on: false, type: "", message: "", errors: [] }
-export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSaved}) {
+export default function QuizCreatorEditor({ quizElement, setQuizElement, mode, setSaved }) {
 
 
   const [quiz, setQuiz] = useState(quizElement);
@@ -98,7 +98,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSave
 
   const handleRemoveQuestion = i => {
     const newItems = [...questions];
-    
+
     newItems.splice(i, 1);
     setQuestions(newItems);
 
@@ -106,7 +106,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSave
 
   const handleRemoveAnswer = i => {
     const newItems = [...question.answers];
-    
+
     newItems.splice(i, 1);
     setQuestion({ ...question, answers: newItems })
   };
@@ -124,21 +124,35 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSave
       setAlert({ on: true, type: "error", message: "Please fill all quiz fields" })
       return;
     }
-    var date = new Date().getDate(); 
-    var month = new Date().getMonth() + 1; 
-    var year = new Date().getFullYear(); 
-    var hours = new Date().getHours(); 
-    var min = new Date().getMinutes(); 
-    var sec = new Date().getSeconds(); 
+
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    var hours = new Date().getHours();
+    var min = new Date().getMinutes();
+    var sec = new Date().getSeconds();
     setSaved(true)
-    setQuiz({
-      ...quiz, questions_answers: questions, created: date + '/' + month + '/' + year
-        + ' ' + hours + ':' + min + ':' + sec
-    })
-    setQuizElement({
-      ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
-        + ' ' + hours + ':' + min + ':' + sec
-    })
+    if (mode != "edit") {
+      setQuiz({
+        ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
+          + ' ' + hours + ':' + min + ':' + sec
+      })
+      setQuizElement({
+        ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
+          + ' ' + hours + ':' + min + ':' + sec
+      })
+    }
+    else {
+      setQuiz({
+        ...quiz, questions_answers: questions, modified: year + '-' + month + '-' + date
+          + ' ' + hours + ':' + min + ':' + sec
+      })
+      setQuizElement({
+        ...quiz, questions_answers: questions, modified: year + '-' + month + '-' + date
+          + ' ' + hours + ':' + min + ':' + sec
+      })
+    }
+
     setAlert({ on: true, type: "success", message: "Saved successfully", });
 
   };
@@ -185,16 +199,19 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSave
                 <Grid container justifyContent="center" spacing={2}>
                   <Grid item xs={10}>
                     <TextField variant="outlined" fullWidth
+                      disabled={true}
                       label={`Question ${i}`} value={questionElement.text}
                       required />
                   </Grid>
                   <Grid item xs={10}>
                     <TextField variant="outlined" fullWidth
+                      disabled={true}
                       label={`Question Positive Feedback ${i}`} value={questionElement.feedback_true}
                       required />
                   </Grid>
                   <Grid item xs={10}>
                     <TextField variant="outlined" fullWidth
+                      disabled={true}
                       label={`Question Negative Feedback ${i}`} value={questionElement.feedback_false}
                       required />
                   </Grid>
@@ -218,7 +235,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSave
                   <Grid item xs={7}>
 
                     <TextField variant="outlined" fullWidth
-
+                      disabled={true}
                       name="text" label={`Answer ${i}`} value={questionElement.answers[i].text}
                       required />
                   </Grid>
@@ -227,7 +244,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSave
                       control={
                         <Checkbox
                           checked={questionElement.answers[i].is_true}
-
+                          disabled={true}
                           name="is_true"
 
                           color="primary"

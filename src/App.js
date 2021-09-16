@@ -77,7 +77,7 @@ function App() {
 
       <Grid container justifyContent="center" spacing={2}>
         {mode != "view" ? <Grid item xs={10}>
-          <QuizCreatorEditor quizElement={quiz} setQuizElement={setQuiz} setSaved={setSaved} />
+          <QuizCreatorEditor quizElement={quiz} setQuizElement={setQuiz} mode={mode} setSaved={setSaved} />
         </Grid> : null}
 
 

@@ -2,35 +2,31 @@ import '.././App.css';
 import { Paper, Grid, Link, Typography, AppBar, Toolbar, FormControlLabel, Button, Radio, RadioGroup, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
-import { useState } from "react";
-import Alert from "@material-ui/lab/Alert";
-
-import DeleteIcon from '@material-ui/icons/Delete';
+import { useEffect, useState } from "react";
 import DialogContent from '@material-ui/core/DialogContent';
 import Dialog from '@material-ui/core/Dialog';
 
 
 
-const initialAlert = { on: false, type: "", message: "", errors: [] }
+
 export default function Quiz({ quiz, SetQuizIndex, id }) {
 
     const classes = useStyles();
-    const [alert, setAlert] = useState(initialAlert);
-    const [numSolved, setNumSolved] = useState(0);
-    const [numRight, setNumRight] = useState(0);
+    const [numRight, setNumRight] = useState(quiz.score ? quiz.score : 0);
+
+
 
 
     const handleAnswer = (e) => {
         const newItems = [...questions];
         newItems[e.target.name].answer_id = e.target.value
         setQuestions(newItems);
-        const NumSolved = numSolved
-        setNumSolved(NumSolved + 1)
+
         if (newItems[e.target.name].answers[e.target.value].is_true) {
             const NumRight = numRight
             setNumRight(NumRight + 1)
         }
-        quiz.score = "" + numRight + "/" + questions.length
+
     };
     const [open, setOpen] = useState(false);
 
@@ -43,6 +39,9 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
         answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: [
         ]
     });
+    useEffect(() => {
+        quiz.score = numRight
+    }, [numRight]);
 
 
     return (
@@ -58,7 +57,7 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
                     Youtube URL: <Link href={quiz.url}>{quiz.url}</Link>
                 </Grid>
                 <Grid item xs={10} >
-                    Score:  {quiz.score ? quiz.score : " -/-"}
+                    Score:  {quiz.score ? quiz.score + "/" + quiz.questions_answers.length : " -/-"}
                 </Grid>
 
                 <Grid container justifyContent="center">
@@ -66,6 +65,7 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
                         onClick={() => setOpen(true)}
                     > Solve </Button>
                     <Button variant="outlined" color="primary" className={classes.button}
+                        disabled={quiz.score}
                         onClick={() => SetQuizIndex(id)}
                     > Edit </Button>
 
@@ -80,7 +80,7 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
                                 <CloseIcon />
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>
-                                Title : {quiz.title}, Score : {numRight}/{questions.length}
+                                Title : {quiz.title}, Score : {numRight}/{quiz.questions_answers.length}
                             </Typography>
 
                         </Toolbar>
