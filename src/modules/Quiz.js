@@ -6,10 +6,10 @@ import Alert from "@material-ui/lab/Alert";
 import DeleteIcon from '@material-ui/icons/Delete';
 
 
-
+ 
 
 const initialAlert = { on: false, type: "", message: "", errors: [] }
-export default function Quiz({ quiz }) {
+export default function Quiz({ quiz,SetQuizIndex,id }) {
 
   const classes = useStyles();
   const [alert, setAlert] = useState(initialAlert);
@@ -51,7 +51,7 @@ export default function Quiz({ quiz }) {
       setAlert({ on: true, type: "error", message: "Please fill all question fields" })
       return;
     }
-    setQuestions([...questions, question], console.log(questions))
+    setQuestions([...questions, question])
     setQuestion({
       answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: []
     });
@@ -75,7 +75,7 @@ export default function Quiz({ quiz }) {
       setAlert({ on: true, type: "error", message: "Every question should have only one correct answer" })
       return;
     }
-    setQuestion({ ...question, answers: [...question.answers, answer] }, console.log(question))
+    setQuestion({ ...question, answers: [...question.answers, answer] })
     setAnswer({
       is_true: false,
       text: ""
@@ -95,7 +95,7 @@ export default function Quiz({ quiz }) {
 
   const handleRemoveQuestion = i => {
     const newItems = [...questions];
-    console.log(i)
+    
     newItems.splice(i, 1);
     setQuestions(newItems);
 
@@ -103,9 +103,9 @@ export default function Quiz({ quiz }) {
 
   const handleRemoveAnswer = i => {
     const newItems = [...question.answers];
-    console.log(i)
+  
     newItems.splice(i, 1);
-    setQuestion({ ...question, answers: newItems }, console.log(question))
+    setQuestion({ ...question, answers: newItems })
   };
 /*
   const handleSave = () => {
@@ -150,8 +150,21 @@ export default function Quiz({ quiz }) {
                 <Grid item xs={10} >
                 Description:  {quiz.description}
                 </Grid>
+                <Grid item xs={10} >
+                Score:  {quiz.score?quiz.score:" -/-"}
+                </Grid>
 
-                
+                <Grid container justifyContent="center">
+                  <Button variant="outlined" color="default" className={classes.button}
+                    //disabled={!employee.status}
+                    //</Grid>onClick={() => handleView(request)}
+                    > View </Button>
+                  <Button variant="outlined" color="primary" className={classes.button}
+                    //disabled={!employee.ismanager && !fromEMRSettings || !employee.status}
+                    onClick={() => SetQuizIndex(id)}
+                    > Edit </Button>
+                  
+                </Grid>
               </Grid>
             </Paper> 
 

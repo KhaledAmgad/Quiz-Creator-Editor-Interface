@@ -8,21 +8,46 @@ import { Paper, Grid, TextareaAutosize, Collapse, IconButton, FormControlLabel, 
 function App() {
   const classes = useStyles();
   const [mode, setMode] = useState("view");
-  const [quizzes, setquizzes] = useState(quizzesInitial);
+  const [saved, setSaved] = useState(false);
+  const [quizzes, setQuizzes] = useState(quizzesInitial);
+  const [quizIndex, SetQuizIndex] = useState(-1);
   const [quiz, setQuiz] = useState({
     created: "", description: "", modified: "", questions_answers: [], score: null, title: "", url: ""
   });
   useEffect(() => {
-    if (mode == "new") {
-      setquizzes([...quizzes, quiz])
-      setMode("view")
+    if (saved){
+      if (mode == "new") {
+        setQuizzes([...quizzes, quiz])
+        setMode("view")
+      }
+      if (mode == "edit") {
+        const newItems = [...quizzes];
+        newItems[quizIndex]=quiz
+        setQuizzes(newItems);
+        setMode("view")
+      }
+      
+      setSaved(false)
+      SetQuizIndex(-1)
       setQuiz({
         created: "", description: "", modified: "", questions_answers: [], score: null, title: "", url: ""
       })
+      
     }
-    console.log(quizzes)
+    
+    
+    
 
   }, [quiz]);
+
+
+  useEffect(() => {
+    if(quizIndex!=-1){
+      setQuiz(quizzes[quizIndex])
+      setMode("edit")
+    }
+    
+  }, [quizIndex]);
 
   return (
     <div className="App">
@@ -31,17 +56,22 @@ function App() {
       <Grid container justifyContent="center" className={classes.Margin}  >
         {/* Control Buttons [CREATE NEW] */}
 
-        <Grid item xs={2}>
+        <Grid item xs={5}>
           <Button variant="contained" color="primary"
+          disabled={mode == "edit"}
             onClick={e => {
               setMode("new")
             }}>Create New</Button>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={5}>
           <Button variant="outlined" color="secondary"
             disabled={mode == "view"}
             onClick={e => {
               setMode("view")
+              setQuiz({
+                created: "", description: "", modified: "", questions_answers: [], score: null, title: "", url: ""
+              })
+              SetQuizIndex(-1)
             }}>Cancel</Button>
         </Grid>
 
@@ -51,7 +81,7 @@ function App() {
 
       <Grid container justifyContent="center" spacing={2}>
         {mode != "view" ? <Grid item xs={10}>
-          <QuizCreatorEditor quizElement={quiz} setQuizElement={setQuiz} />
+          <QuizCreatorEditor quizElement={quiz} setQuizElement={setQuiz} setSaved={setSaved} />
         </Grid> : null}
 
 
@@ -59,7 +89,7 @@ function App() {
         {mode == "view" && quizzes && quizzes.length > 0 && quizzes.map((quizElement, i) => {
           return (
           <Grid item xs={10}>
-            <Quiz quiz={quizElement} />
+            <Quiz quiz={quizElement}  SetQuizIndex={SetQuizIndex} id={i} />
           </Grid>
           )
 
@@ -92,6 +122,7 @@ const useStyles = makeStyles((theme) => ({
   },
   control: {
     padding: theme.spacing(2),
+    
   },
   paper: {
 

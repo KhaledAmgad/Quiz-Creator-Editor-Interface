@@ -9,7 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const initialAlert = { on: false, type: "", message: "", errors: [] }
-export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
+export default function QuizCreatorEditor({ quizElement, setQuizElement ,setSaved}) {
 
 
   const [quiz, setQuiz] = useState(quizElement);
@@ -54,7 +54,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
       setAlert({ on: true, type: "error", message: "Please fill all question fields" })
       return;
     }
-    setQuestions([...questions, question], console.log(questions))
+    setQuestions([...questions, question])
     setQuestion({
       answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: []
     });
@@ -78,7 +78,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
       setAlert({ on: true, type: "error", message: "Every question should have only one correct answer" })
       return;
     }
-    setQuestion({ ...question, answers: [...question.answers, answer] }, console.log(question))
+    setQuestion({ ...question, answers: [...question.answers, answer] })
     setAnswer({
       is_true: false,
       text: ""
@@ -93,12 +93,12 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
 
 
   const handleChangeQuiz = e => {
-    setQuiz({ ...quiz, [e.target.name]: e.target.value }, console.log(quiz));
+    setQuiz({ ...quiz, [e.target.name]: e.target.value });
   };
 
   const handleRemoveQuestion = i => {
     const newItems = [...questions];
-    console.log(i)
+    
     newItems.splice(i, 1);
     setQuestions(newItems);
 
@@ -106,9 +106,9 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
 
   const handleRemoveAnswer = i => {
     const newItems = [...question.answers];
-    console.log(i)
+    
     newItems.splice(i, 1);
-    setQuestion({ ...question, answers: newItems }, console.log(question))
+    setQuestion({ ...question, answers: newItems })
   };
 
   const handleSave = () => {
@@ -124,17 +124,17 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement }) {
       setAlert({ on: true, type: "error", message: "Please fill all quiz fields" })
       return;
     }
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear(); //Current Year
-    var hours = new Date().getHours(); //Current Hours
-    var min = new Date().getMinutes(); //Current Minutes
-    var sec = new Date().getSeconds(); //Current Seconds
- 
+    var date = new Date().getDate(); 
+    var month = new Date().getMonth() + 1; 
+    var year = new Date().getFullYear(); 
+    var hours = new Date().getHours(); 
+    var min = new Date().getMinutes(); 
+    var sec = new Date().getSeconds(); 
+    setSaved(true)
     setQuiz({
       ...quiz, questions_answers: questions, created: date + '/' + month + '/' + year
         + ' ' + hours + ':' + min + ':' + sec
-    }, console.log(quiz))
+    })
     setQuizElement({
       ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
         + ' ' + hours + ':' + min + ':' + sec
