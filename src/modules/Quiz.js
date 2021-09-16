@@ -31,18 +31,9 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
     const [open, setOpen] = useState(false);
 
     const [questions, setQuestions] = useState(quiz.questions_answers);
-    const [answer, setAnswer] = useState({
-        is_true: false,
-        text: ""
-    });
-    const [question, setQuestion] = useState({
-        answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: [
-        ]
-    });
     useEffect(() => {
         quiz.score = numRight
     }, [numRight]);
-
 
     return (
         <Paper variant="outlined" style={{ margin: 10, padding: 10, backgroundColor: "azure" }}>
@@ -153,19 +144,12 @@ export default function Quiz({ quiz, SetQuizIndex, id }) {
 
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
+    
     grid: {
         margin: theme.spacing(5),
     },
-    TableCell: {
-        wordWrap: "break-word",
-    },
+    
     button: {
-        margin: theme.spacing(2),
-    },
-    TextField: {
         margin: theme.spacing(2),
     },
     control: {

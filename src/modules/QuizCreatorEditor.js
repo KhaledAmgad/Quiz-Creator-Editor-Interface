@@ -132,7 +132,7 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement, mode, s
     var min = new Date().getMinutes();
     var sec = new Date().getSeconds();
     setSaved(true)
-    if (mode != "edit") {
+    if (mode !== "edit") {
       setQuiz({
         ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
           + ' ' + hours + ':' + min + ':' + sec
@@ -413,12 +413,6 @@ export default function QuizCreatorEditor({ quizElement, setQuizElement, mode, s
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  TableCell: {
-    wordWrap: "break-word",
-  },
   button: {
     margin: theme.spacing(2),
   },

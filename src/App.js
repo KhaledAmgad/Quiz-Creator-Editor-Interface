@@ -3,7 +3,7 @@ import QuizCreatorEditor from './modules/QuizCreatorEditor'
 import Quiz from './modules/Quiz'
 import { useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Grid, TextareaAutosize, Collapse, IconButton, FormControlLabel, Button, Checkbox, TextField } from "@material-ui/core";
+import {  Grid,  Button,  } from "@material-ui/core";
 
 function App() {
   const classes = useStyles();
@@ -16,11 +16,11 @@ function App() {
   });
   useEffect(() => {
     if (saved){
-      if (mode == "new") {
+      if (mode === "new") {
         setQuizzes([...quizzes, quiz])
         setMode("view")
       }
-      if (mode == "edit") {
+      if (mode === "edit") {
         const newItems = [...quizzes];
         newItems[quizIndex]=quiz
         setQuizzes(newItems);
@@ -38,7 +38,7 @@ function App() {
 
 
   useEffect(() => {
-    if(quizIndex!=-1){
+    if(quizIndex!==-1){
       setQuiz(quizzes[quizIndex])
       setMode("edit")
     }
@@ -54,14 +54,14 @@ function App() {
 
         <Grid item xs={5}>
           <Button variant="contained" color="primary"
-          disabled={mode == "edit"}
+          disabled={mode === "edit"}
             onClick={e => {
               setMode("new")
             }}>Create New</Button>
         </Grid>
         <Grid item xs={5}>
           <Button variant="outlined" color="secondary"
-            disabled={mode == "view"}
+            disabled={mode === "view"}
             onClick={e => {
               setMode("view")
               setQuiz({
@@ -76,13 +76,13 @@ function App() {
 
 
       <Grid container justifyContent="center" spacing={2}>
-        {mode != "view" ? <Grid item xs={10}>
+        {mode !== "view" ? <Grid item xs={10}>
           <QuizCreatorEditor quizElement={quiz} setQuizElement={setQuiz} mode={mode} setSaved={setSaved} />
         </Grid> : null}
 
 
 
-        {mode == "view" && quizzes && quizzes.length > 0 && quizzes.map((quizElement, i) => {
+        {mode === "view" && quizzes && quizzes.length > 0 && quizzes.map((quizElement, i) => {
           return (
           <Grid item xs={10}>
             <Quiz quiz={quizElement}  SetQuizIndex={SetQuizIndex} id={i} />
@@ -104,12 +104,6 @@ function App() {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  TableCell: {
-    wordWrap: "break-word",
-  },
   button: {
     margin: theme.spacing(2),
   },
