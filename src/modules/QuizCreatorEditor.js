@@ -1,7 +1,7 @@
 import { Paper, Grid, TextareaAutosize, Collapse, IconButton, FormControlLabel, Button, Checkbox, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Alert from "@material-ui/lab/Alert";
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -48,11 +48,10 @@ export default function QuizCreatorEditor() {
 
 
   const handleAddQuestion = () => {
-
     if (
-      !question.text
+      !question.text||!question.feedback_false||!question.feedback_true||question.answers.length<2||question.answers.filter((v) => v.is_true).length===0
     ) {
-      setAlert({ on: true, type: "error", message: "Please fill all item fields" })
+      setAlert({ on: true, type: "error", message: "Please fill all question fields" })
       return;
     }
     setQuestions([...questions, question], console.log(questions))
@@ -97,17 +96,38 @@ export default function QuizCreatorEditor() {
     setQuiz({ ...quiz, [e.target.name]: e.target.value }, console.log(quiz));
   };
 
-  const handleRemoveQuestion = e => {
+  const handleRemoveQuestion = i => {
     const newItems = [...questions];
-    newItems.splice(e.target.id, 1);
+    console.log(i)
+    newItems.splice(i, 1);
     setQuestions(newItems);
 
   };
 
-  const handleRemoveAnswer = e => {
+  const handleRemoveAnswer = i => {
     const newItems = [...question.answers];
-    newItems.splice(e.target.id, 1);
+    console.log(i)
+    newItems.splice(i, 1);
     setQuestion({ ...question, answers: newItems }, console.log(question))
+  };
+
+  const handleSave = () => {
+    if (
+      questions.length===0
+    ) {
+      setAlert({ on: true, type: "error", message: "Please Add Questions" })
+      return;
+    }
+    if (
+      !quiz.title||!quiz.description||!quiz.url
+    ) {
+      setAlert({ on: true, type: "error", message: "Please fill all quiz fields" })
+      return;
+    }
+    setQuiz({...quiz,questions_answers:questions},console.log(quiz))
+
+    setAlert({ on: true, type: "success", message: "Saved successfully", });
+    
   };
 
 
@@ -168,8 +188,8 @@ export default function QuizCreatorEditor() {
                 </Grid >
               </Grid >
               <Grid item xs={1} >
-                <Button variant="outlined" size="small" color="secondary"
-                  onClick={handleRemoveQuestion}
+                <Button variant="outlined" color="secondary"
+                  onClick={() => handleRemoveQuestion(i)}
                 >
                   <DeleteIcon />
                 </Button>
@@ -186,7 +206,7 @@ export default function QuizCreatorEditor() {
 
                     <TextField variant="outlined" fullWidth
 
-                      name="text" label={`Answer ${i}`} value={questionElement.answers[i].text} onChange={handleChangeNewAnswer}
+                      name="text" label={`Answer ${i}`} value={questionElement.answers[i].text} 
                       required />
                   </Grid>
                   <Grid item xs={3}>
@@ -194,7 +214,7 @@ export default function QuizCreatorEditor() {
                       control={
                         <Checkbox
                           checked={questionElement.answers[i].is_true}
-                          onChange={handleChangeNewAnswer}
+                          
                           name="is_true"
 
                           color="primary"
@@ -243,7 +263,7 @@ export default function QuizCreatorEditor() {
 
             <Grid container justifyContent="center" spacing={2}>
 
-              <Grid item xs={7}>
+              <Grid item xs={6}>
 
                 <TextField variant="outlined" fullWidth
 
@@ -263,9 +283,15 @@ export default function QuizCreatorEditor() {
                   }
                   label="Correct Answer"
                 >
-
                 </FormControlLabel>
               </Grid>
+              <Grid item xs={1} >
+                <Button variant="outlined" color="secondary"
+                  onClick={() => handleRemoveAnswer(i)}
+                >
+                  <DeleteIcon />
+                </Button>
+              </Grid >
             </Grid>
           </Paper>
         )}
@@ -331,7 +357,7 @@ export default function QuizCreatorEditor() {
         <Grid item xs={3}>
           <Button variant="outlined" color="primary" fullWidth
 
-          //onClick={handleSave}
+          onClick={handleSave}
           >Save</Button>
         </Grid>
 
