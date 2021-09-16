@@ -1,204 +1,173 @@
-import { Paper, Grid, TextareaAutosize, Collapse, IconButton, FormControlLabel, Button, Checkbox, TextField } from "@material-ui/core";
+import '.././App.css';
+import { Paper, Grid, Link, Typography, AppBar, Toolbar, FormControlLabel, Button, Radio, RadioGroup, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import Alert from "@material-ui/lab/Alert";
+
 import DeleteIcon from '@material-ui/icons/Delete';
+import DialogContent from '@material-ui/core/DialogContent';
+import Dialog from '@material-ui/core/Dialog';
 
 
- 
 
 const initialAlert = { on: false, type: "", message: "", errors: [] }
-export default function Quiz({ quiz,SetQuizIndex,id }) {
+export default function Quiz({ quiz, SetQuizIndex, id }) {
 
-  const classes = useStyles();
-  const [alert, setAlert] = useState(initialAlert);
-
-  const [questions, setQuestions] = useState(quiz.questions_answers);
-  const [answer, setAnswer] = useState({
-    is_true: false,
-    text: ""
-  });
-  const [question, setQuestion] = useState({
-    answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: [
-    ]
-  });
+    const classes = useStyles();
+    const [alert, setAlert] = useState(initialAlert);
 
 
-  const handleChangeNewQuestion = e => {
-    setQuestion({ ...question, [e.target.name]: e.target.value });
-  };
+    const handleAnswer = (e) => {
 
-  const handleChangeNewAnswer = e => {
-    setAnswer({ ...answer, [e.target.name]: e.target.value });
+        const newItems = [...questions];
+        newItems[e.target.name].answer_id=e.target.value
 
-    switch (e.target.type) {
-      case "checkbox":
-        setAnswer({ ...answer, [e.target.name]: e.target.checked });
-        break;
-      default:
-        setAnswer({ ...answer, [e.target.name]: e.target.value });
-    }
-  };
+        setQuestions(newItems);
+        console.log(questions)
 
+        
+    };
+    const [open, setOpen] = useState(false);
 
-
-
-  const handleAddQuestion = () => {
-    if (
-      !question.text || !question.feedback_false || !question.feedback_true || question.answers.length < 2 || question.answers.filter((v) => v.is_true).length === 0
-    ) {
-      setAlert({ on: true, type: "error", message: "Please fill all question fields" })
-      return;
-    }
-    setQuestions([...questions, question])
-    setQuestion({
-      answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: []
+    const [questions, setQuestions] = useState(quiz.questions_answers);
+    const [answer, setAnswer] = useState({
+        is_true: false,
+        text: ""
+    });
+    const [question, setQuestion] = useState({
+        answer_id: null, text: "", feedback_false: "", feedback_true: "", answers: [
+        ]
     });
 
-    setAlert({ on: true, type: "success", message: "Added successfully", });
 
-    setTimeout(() => {
-      setAlert(initialAlert);
-    }, 1000);
-
-  }
-  const handleAddAnswer = () => {
-    const error = question.answers.filter((v) => v.is_true).length >= 1 && answer.is_true;
-    if (
-      !answer.text
-    ) {
-      setAlert({ on: true, type: "error", message: "Please fill all New Answer fields" })
-      return;
-    }
-    if (error) {
-      setAlert({ on: true, type: "error", message: "Every question should have only one correct answer" })
-      return;
-    }
-    setQuestion({ ...question, answers: [...question.answers, answer] })
-    setAnswer({
-      is_true: false,
-      text: ""
-    })
-
-    setAlert({ on: true, type: "success", message: "Added successfully", });
-    setTimeout(() => {
-      setAlert(initialAlert);
-    }, 1000);
-
-  }
-
-/*
-  const handleChangeQuiz = e => {
-    setQuiz({ ...quiz, [e.target.name]: e.target.value }, console.log(quiz));
-  };*/
-
-  const handleRemoveQuestion = i => {
-    const newItems = [...questions];
-    
-    newItems.splice(i, 1);
-    setQuestions(newItems);
-
-  };
-
-  const handleRemoveAnswer = i => {
-    const newItems = [...question.answers];
-  
-    newItems.splice(i, 1);
-    setQuestion({ ...question, answers: newItems })
-  };
-/*
-  const handleSave = () => {
-    if (
-      questions.length === 0
-    ) {
-      setAlert({ on: true, type: "error", message: "Please Add Questions" })
-      return;
-    }
-    if (
-      !quiz.title || !quiz.description || !quiz.url
-    ) {
-      setAlert({ on: true, type: "error", message: "Please fill all quiz fields" })
-      return;
-    }
-    var date = new Date().getDate(); //Current Date
-    var month = new Date().getMonth() + 1; //Current Month
-    var year = new Date().getFullYear(); //Current Year
-    var hours = new Date().getHours(); //Current Hours
-    var min = new Date().getMinutes(); //Current Minutes
-    var sec = new Date().getSeconds(); //Current Seconds
- 
-    setQuiz({
-      ...quiz, questions_answers: questions, created: date + '/' + month + '/' + year
-        + ' ' + hours + ':' + min + ':' + sec
-    }, console.log(quiz))
-    setQuizElement({
-      ...quiz, questions_answers: questions, created: year + '-' + month + '-' + date
-        + ' ' + hours + ':' + min + ':' + sec
-    })
-    setAlert({ on: true, type: "success", message: "Saved successfully", });
-
-  };
-*/
-
-  return (
-    <Paper variant="outlined" style={{ margin: 10, padding: 10, backgroundColor: "azure" }}>
-              <Grid  container justifyContent="center" spacing={2}>
+    return (
+        <Paper variant="outlined" style={{ margin: 10, padding: 10, backgroundColor: "azure" }}>
+            <Grid container justifyContent="center" spacing={2}>
                 <Grid item xs={10} >
-                  Title: {quiz.title}
+                    Title: {quiz.title}
                 </Grid>
                 <Grid item xs={10} >
-                Description:  {quiz.description}
+                    Description:  {quiz.description}
                 </Grid>
                 <Grid item xs={10} >
-                Score:  {quiz.score?quiz.score:" -/-"}
+                    Youtube URL: <Link href={quiz.url}>{quiz.url}</Link>
+                </Grid>
+                <Grid item xs={10} >
+                    Score:  {quiz.score ? quiz.score : " -/-"}
                 </Grid>
 
                 <Grid container justifyContent="center">
-                  <Button variant="outlined" color="default" className={classes.button}
-                    //disabled={!employee.status}
-                    //</Grid>onClick={() => handleView(request)}
-                    > View </Button>
-                  <Button variant="outlined" color="primary" className={classes.button}
-                    //disabled={!employee.ismanager && !fromEMRSettings || !employee.status}
-                    onClick={() => SetQuizIndex(id)}
+                    <Button variant="outlined" color="default" className={classes.button}
+                        onClick={() => setOpen(true)}
+                    > Solve </Button>
+                    <Button variant="outlined" color="primary" className={classes.button}
+                        onClick={() => SetQuizIndex(id)}
                     > Edit </Button>
-                  
-                </Grid>
-              </Grid>
-            </Paper> 
 
-  );
+                </Grid>
+            </Grid>
+            {
+                <Dialog fullScreen open={open} onClose={() => setOpen(false)}
+                    aria-labelledby="form-dialog-title">
+                    <AppBar className={classes.appBar}>
+                        <Toolbar>
+                            <Typography variant="h6" className={classes.title}>
+                                {quiz.title}
+                            </Typography>
+
+                        </Toolbar>
+                    </AppBar>
+                    <DialogContent>
+                        <div className="App">
+                            <Grid container justifyContent="center" className={classes.grid} spacing={2}>
+                                {questions && questions.length > 0 && questions.map((questionElement, i) => {
+                                    return (
+                                        <Grid item xs={10}>
+                                            <Paper variant="outlined" className={classes.paper}  >
+                                                <Grid container justifyContent="center" spacing={2}>
+                                                    <Grid item xs={10}>
+                                                        <Grid container justifyContent="center" spacing={2}>
+                                                            <Grid item xs={10}>
+
+                                                                <Typography variant="h5">{`${i + 1})`} {questionElement.text}</Typography>
+                                                            </Grid>
+                                                            {/*<Grid item xs={10}>
+                                                        <TextField variant="outlined" fullWidth
+                                                            label={`Question Positive Feedback ${i}`} value={questionElement.feedback_true}
+                                                            required />
+                                                    </Grid>
+                                                    <Grid item xs={10}>
+                                                        <TextField variant="outlined" fullWidth
+                                                            label={`Question Negative Feedback ${i}`} value={questionElement.feedback_false}
+                                                            required />
+                                                    </Grid> */}
+
+                                                        </Grid >
+                                                    </Grid >
+
+                                                </Grid >
+                                                <RadioGroup
+                                                    aria-label="gender"
+                                                    name="controlled-radio-buttons-group"
+                                                    disabled={true}
+                                                    value={questionElement.answer_id?Number(questionElement.answer_id):null}
+                                                    onChange={handleAnswer}
+                                                >
+                                                    {[...Array(questionElement.answers.length)].map((_, j) =>
+                                                        <FormControlLabel disabled={questionElement.answer_id} value={j} name={i} control={<Radio />} label={questionElement.answers[i].text} />
+
+                                                    )}
+                                                </RadioGroup>
+
+                                            </Paper>
+                                        </Grid>)
+
+                                })}
+
+                            </Grid>
+                        </div>
+
+                    </DialogContent>
+
+                </Dialog>
+            }
+        </Paper>
+
+    );
 }
 
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  TableCell: {
-    wordWrap: "break-word",
-  },
-  button: {
-    margin: theme.spacing(2),
-  },
-  TextField: {
-    margin: theme.spacing(2),
-  },
-  control: {
-    padding: theme.spacing(2),
-  },
-  paper: {
-
-    padding: theme.spacing(2),
-    margin: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-    "& > * + *": {
-      marginTop: theme.spacing(1),
+    root: {
+        flexGrow: 1,
     },
-  },
+    grid: {
+        margin: theme.spacing(5),
+    },
+    TableCell: {
+        wordWrap: "break-word",
+    },
+    button: {
+        margin: theme.spacing(2),
+    },
+    TextField: {
+        margin: theme.spacing(2),
+    },
+    control: {
+        padding: theme.spacing(2),
+    },
+    paper: {
+
+        padding: theme.spacing(2),
+        margin: theme.spacing(3),
+        textAlign: "center",
+        color: theme.palette.text.secondary,
+        "& > * + *": {
+            marginTop: theme.spacing(1),
+        },
+    },
 
 
 }));

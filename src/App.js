@@ -32,11 +32,7 @@ function App() {
       setQuiz({
         created: "", description: "", modified: "", questions_answers: [], score: null, title: "", url: ""
       })
-      
     }
-    
-    
-    
 
   }, [quiz]);
 
